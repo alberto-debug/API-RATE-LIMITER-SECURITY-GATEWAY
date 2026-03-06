@@ -28,7 +28,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-
     private final TokenService tokenService;
     private final UserRepository userRepository;
 
