@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.Collections;
 
 
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
-
 
     private final TokenService tokenService;
     private final UserRepository userRepository;
