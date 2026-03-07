@@ -1,14 +1,19 @@
 package com.alberto.rateLimiter.security;
 
 import com.alberto.rateLimiter.model.Entity.User;
+import com.alberto.rateLimiter.security.exception.TokenGenerationException;
+import com.alberto.rateLimiter.security.exception.TokenValidationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Slf4j
 @Service
 public class TokenService {
 
@@ -18,26 +23,46 @@ public class TokenService {
     @Value("${JWT_EXPIRATION_MS:8640000}")
     private Long expirationMS;
 
-    public String generateToken(User user) {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+    @Value("${JWT_ISSUER}")
+    private String issuer;
 
-        return JWT.create()
-                .withIssuer("login-auth-api")
-                .withSubject(user.getEmail())
-                .withExpiresAt(getExpirationDate())
-                .sign(algorithm);
+    public String generateToken(User user){
+
+        try {
+
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.create()
+                    .withIssuer(issuer)
+                    .withSubject(user.getEmail())
+                    .withExpiresAt(getExpirationDate())
+                    .sign(algorithm);
+
+        }catch (JWTCreationException e){
+            log.error("Token generation failed", e);
+            throw new TokenGenerationException("Failed to generate token", e);
+
+        }
     }
 
-    public String validateToken(String token) {
+    public String validateToken(String token){
         try {
+            if (token == null || token.isEmpty()){
+                throw new TokenValidationException("Token cannot be null or empty");
+            }
             Algorithm algorithm = Algorithm.HMAC256(secret);
+
             return JWT.require(algorithm)
-                    .withIssuer("login-auth-api")
+                    .withIssuer(issuer)
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException jwtVerificationException) {
-            return "Error validating the token";
+
+        }catch (JWTVerificationException e) {
+            log.warn("JWT verification failed: {}", e.getMessage());
+            throw new TokenValidationException("Invalid or expired token", e);
+        } catch (Exception e) {
+            log.error("Unexpected error during token validation", e);
+            throw new TokenValidationException("Token validation failed", e);
         }
     }
 
