@@ -1,4 +1,4 @@
-package com.alberto.rateLimiter.security.exception;
+package com.alberto.rateLimiter.exception;
 
 public class TokenGenerationException extends RuntimeException {
     public TokenGenerationException(String message) {
