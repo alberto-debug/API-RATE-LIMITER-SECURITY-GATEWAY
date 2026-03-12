@@ -1,8 +1,8 @@
 package com.alberto.rateLimiter.security;
 
 import com.alberto.rateLimiter.model.Entity.User;
-import com.alberto.rateLimiter.security.exception.TokenGenerationException;
-import com.alberto.rateLimiter.security.exception.TokenValidationException;
+import com.alberto.rateLimiter.exception.TokenGenerationException;
+import com.alberto.rateLimiter.exception.TokenValidationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
