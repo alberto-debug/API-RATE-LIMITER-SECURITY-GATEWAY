@@ -1,8 +1,8 @@
 package com.alberto.rateLimiter.model.Entity;
 
 
+
 import com.alberto.rateLimiter.model.Roles.Role;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

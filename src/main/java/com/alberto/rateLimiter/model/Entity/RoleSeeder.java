@@ -17,11 +17,11 @@ public class RoleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.findByname("ROLE_USER").isEmpty()){
+        if (roleRepository.findByName("ROLE_USER").isEmpty()){
             roleRepository.save(new Role(null, "ROLE_USER", new HashSet<>()));
         }
 
-        if (roleRepository.findByname("ROLE_ADMIN").isEmpty()){
+        if (roleRepository.findByName("ROLE_ADMIN").isEmpty()){
             roleRepository.save(new Role(null, "ROLE_ADMIN", new HashSet<>()));
         }
     }

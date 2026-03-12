@@ -1,4 +1,4 @@
-package com.alberto.rateLimiter.security.exception;
+package com.alberto.rateLimiter.exception;
 
 public class TokenValidationException extends RuntimeException {
     public TokenValidationException(String message) {
