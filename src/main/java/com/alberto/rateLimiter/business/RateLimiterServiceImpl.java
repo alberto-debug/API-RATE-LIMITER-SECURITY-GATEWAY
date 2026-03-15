@@ -24,14 +24,23 @@ public class RateLimiterServiceImpl implements RateLimiterService {
         try {
             Long currentCount = redisTemplate.opsForValue().increment(key);
 
-            if (currentCount ==1){
+            log.debug("Rate limit check - Client: {}, Key: {}, Count: {}, Limit: {}",
+                    clientId, key, currentCount, requestPerMinute);
+
+            if (currentCount == 1){
                 redisTemplate.expire(key, Duration.ofSeconds(windowSizeSeconds));
+                log.debug("Set expiration for key: {} with {} seconds", key, windowSizeSeconds);
             }
 
-            return currentCount <= requestPerMinute;
+            boolean allowed = currentCount <= requestPerMinute;
+            if (!allowed) {
+                log.warn("Rate limit EXCEEDED - Client: {}, Count: {}/{}",
+                        clientId, currentCount, requestPerMinute);
+            }
+            return allowed;
 
         }catch (Exception e){
-            log.error("Rate limiting error for client: {}", clientId);
+            log.error("Rate limiting error for client: {} - Exception: {}", clientId, e.getMessage(), e);
             return true;
         }
 

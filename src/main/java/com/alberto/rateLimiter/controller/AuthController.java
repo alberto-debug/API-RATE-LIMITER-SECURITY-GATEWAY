@@ -39,7 +39,10 @@ public class AuthController {
             ResponseDTO response = new ResponseDTO("User logged successfully", token);
             log.debug("User Logged in: {}", body.email());
 
+            log.info("Login Success for user: {}", body.email());
+
             return ResponseEntity.ok(response);
+
         }catch (IllegalArgumentException e){
 
             log.warn("Login failed for email: {}", body.email());

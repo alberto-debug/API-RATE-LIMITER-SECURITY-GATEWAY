@@ -16,11 +16,31 @@ public class ClientIdentifier {
     private static final String BEARER_PREFIX = "Bearer ";
     private final TokenService tokenService;
 
-    public String getUserIdentifier(HttpServletRequest request){
 
-        String token = extractToken(request);
+    public String getSafeClientIdentifier(HttpServletRequest request){
 
-        return tokenService.validateToken(token);
+        try {
+            String authHeader = request.getHeader("Authorization");
+
+            if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)){
+                String token = authHeader.substring(7);
+                if (!token.isEmpty()) {
+                    return tokenService.validateToken(token);
+                }
+            }
+
+            // Fallback: Use IP address for unauthenticated requests
+            String clientIp = request.getHeader("X-Forwarded-For");
+            if (clientIp == null || clientIp.isEmpty()) {
+                clientIp = request.getRemoteAddr();
+            }
+            log.debug("Using IP-based client identifier: {}", clientIp);
+            return "ip:" + clientIp;
+
+        } catch (Exception e) {
+            log.warn("Failed to get client identifier, using remote IP as fallback");
+            return "ip:" + request.getRemoteAddr();
+        }
     }
 
 
@@ -29,7 +49,7 @@ public class ClientIdentifier {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)){
-            throw new TokenValidationException("Authorization FailedL: Invalid or Missing Token");
+            throw new TokenValidationException("Authorization Failed: Invalid or Missing Token");
         }
 
         String token = authHeader.substring(7);

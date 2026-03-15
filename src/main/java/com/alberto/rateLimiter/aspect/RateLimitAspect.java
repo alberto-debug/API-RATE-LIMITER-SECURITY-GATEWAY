@@ -19,15 +19,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RateLimitingAspect {
+public class RateLimitAspect {
 
     private final RateLimiterService rateLimiterService;
-    private ClientIdentifier clientIdentifier;
+    private final ClientIdentifier clientIdentifier;
 
-    @Around("@annotaion(rateLimit)")
+    @Around("@annotation(rateLimit)")
     public Object enforce(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable{
         HttpServletRequest request = getRequest();
-        String clientId = clientIdentifier.getUserIdentifier(request);
+
+        String clientId = clientIdentifier.getSafeClientIdentifier(request);
 
         if (!rateLimiterService.isAllowed(clientId, rateLimit.requestsPerMinute(), rateLimit.windowSizeSeconds())){
             log.warn("Rate limit exceeded for client: {}", clientId);
