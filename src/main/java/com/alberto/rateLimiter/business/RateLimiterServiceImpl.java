@@ -35,8 +35,6 @@ public class RateLimiterServiceImpl implements RateLimiterService {
             return true;
         }
 
-
-        return false;
     }
 
     @Override
