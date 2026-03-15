@@ -1,4 +1,4 @@
-package com.alberto.rateLimiter.model.Entity;
+package com.alberto.rateLimiter.sedders;
 
 
 import com.alberto.rateLimiter.model.Roles.Role;

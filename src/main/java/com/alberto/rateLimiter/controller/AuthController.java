@@ -9,6 +9,7 @@ import com.alberto.rateLimiter.security.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequiredArgsConstructor
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
+    @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDTO body){
 
         try {
@@ -49,7 +51,6 @@ public class AuthController {
         }
 
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Valid  @RequestBody RegisterRequestDTO body){

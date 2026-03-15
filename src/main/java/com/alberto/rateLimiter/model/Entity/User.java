@@ -1,7 +1,5 @@
 package com.alberto.rateLimiter.model.Entity;
 
-
-
 import com.alberto.rateLimiter.model.Roles.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -40,13 +39,13 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private LocalDateTime joined;
+    @CreationTimestamp
+    private LocalDateTime joined = LocalDateTime.now();
 
     @ManyToMany(fetch =  FetchType.EAGER)
     @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_name"))
     private Set<Role> roles = new HashSet<>();
-
 
 }
