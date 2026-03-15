@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimit {
 
-    int requestPerMinute() default 100;
+    int requestsPerMinute() default 100;
     int windowSizeSeconds() default 60;
 }

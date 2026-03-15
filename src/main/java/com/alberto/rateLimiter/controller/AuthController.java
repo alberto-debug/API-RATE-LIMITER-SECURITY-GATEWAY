@@ -3,6 +3,7 @@ package com.alberto.rateLimiter.controller;
 import com.alberto.rateLimiter.DTOs.LoginRequestDTO;
 import com.alberto.rateLimiter.DTOs.RegisterRequestDTO;
 import com.alberto.rateLimiter.DTOs.ResponseDTO;
+import com.alberto.rateLimiter.annotation.RateLimit;
 import com.alberto.rateLimiter.business.UserService;
 import com.alberto.rateLimiter.model.Entity.User;
 import com.alberto.rateLimiter.security.TokenService;
@@ -27,6 +28,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
+    @RateLimit(requestsPerMinute = 5)
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDTO body){
 
         try {
@@ -53,6 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @RateLimit(requestsPerMinute = 5)
     public ResponseEntity<ResponseDTO> register(@Valid  @RequestBody RegisterRequestDTO body){
 
         try {
