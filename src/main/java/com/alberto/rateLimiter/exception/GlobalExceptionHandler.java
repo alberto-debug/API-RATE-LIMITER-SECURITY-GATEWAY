@@ -1,6 +1,7 @@
 package com.alberto.rateLimiter.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,16 @@ import java.util.Map;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<Map<String, String>> handleRateLimitExceeded(RateLimitExceededException e){
+        log.warn("Rate Limit Exceeded: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(Map.of(
+                        "error", "RATE_LIMIT_EXCEEDED",
+                        "message", "Rate Limit Exceeded"
+                ));
+    }
 
     @ExceptionHandler(TokenGenerationException.class)
     public ResponseEntity<Map<String, String>> handleTokenGeneration(TokenGenerationException ex){

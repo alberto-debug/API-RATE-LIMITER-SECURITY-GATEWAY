@@ -24,13 +24,12 @@ public class RateLimitingAspect {
     private final RateLimiterService rateLimiterService;
     private ClientIdentifier clientIdentifier;
 
-
     @Around("@annotaion(rateLimit)")
     public Object enforce(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable{
         HttpServletRequest request = getRequest();
         String clientId = clientIdentifier.getUserIdentifier(request);
 
-        if (!rateLimiterService.isAllowed(clientId, rateLimit.requestPerMinute(), rateLimit.windowSizeSeconds())){
+        if (!rateLimiterService.isAllowed(clientId, rateLimit.requestsPerMinute(), rateLimit.windowSizeSeconds())){
             log.warn("Rate limit exceeded for client: {}", clientId);
             throw new RateLimitExceededException("Rate limit exceeded");
         }
